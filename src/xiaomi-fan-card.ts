@@ -25,6 +25,9 @@ type SupportedAttributes = {
   sleepMode: boolean;
   led: boolean;
   speedIncreaseDecreaseButtons: boolean;
+  verticalOscillation: boolean;
+  verticalAngle: boolean;
+  supportedVerticalAngles: number[];
 };
 
 type DeviceEntities = {
@@ -141,6 +144,9 @@ export class FanXiaomiCard extends LitElement {
     sleepMode: false,
     led: false,
     speedIncreaseDecreaseButtons: false,
+    verticalOscillation: false,
+    verticalAngle: false,
+    supportedVerticalAngles: [30, 60, 90, 100],
   };
 
   @state() private config!: FanXiaomiCardConfig;
@@ -243,6 +249,31 @@ export class FanXiaomiCard extends LitElement {
 
   private getOscillation() {
     return this.hass.states[this.config.entity].attributes["oscillating"];
+  }
+
+  private setVerticalOscillation(on: boolean) {
+    this.hass.callService(
+      this.config.platform,
+      on ? "fan_set_vertical_oscillation_on" : "fan_set_vertical_oscillation_off",
+      {
+        entity_id: this.config.entity,
+      }
+    );
+  }
+
+  private getVerticalOscillation() {
+    return this.hass.states[this.config.entity].attributes["vertical_oscillate"];
+  }
+
+  private setVerticalAngle(value: number) {
+    this.hass.callService(this.config.platform, "fan_set_vertical_oscillation_angle", {
+      entity_id: this.config.entity,
+      vertical_angle: value,
+    });
+  }
+
+  private getVerticalAngle(): number {
+    return Number(this.hass.states[this.config.entity].attributes["vertical_angle"]);
   }
 
   private getSpeedPercentage(): number {
@@ -448,6 +479,15 @@ export class FanXiaomiCard extends LitElement {
       if (this.config.force_sleep_mode_support) {
         this.supportedAttributes.sleepMode = true;
       }
+
+      // Vertical oscillation / vertical angle are exposed by some models (e.g. air
+      // circulators). Enable the controls only when the entity actually reports them.
+      if (attrs["vertical_oscillate"] !== undefined) {
+        this.supportedAttributes.verticalOscillation = true;
+      }
+      if (attrs["vertical_angle"] !== undefined) {
+        this.supportedAttributes.verticalAngle = true;
+      }
     }
 
     this.isConfigureAsyncFinished = true;
@@ -498,6 +538,8 @@ export class FanXiaomiCard extends LitElement {
     const speed_percentage = this.getSpeedPercentage();
     const child_lock = this.getChildLock();
     const oscillating = this.getOscillation();
+    const vertical_oscillating = this.getVerticalOscillation();
+    const vertical_angle = this.getVerticalAngle();
     const delay_off_countdown = this.getTimer();
     const angle = this.getAngle();
     const preset_mode = this.getPresetMode();
@@ -563,6 +605,12 @@ export class FanXiaomiCard extends LitElement {
               <p class="attr-value var-angle">${angle}</p>
             </div>`
           : ""}
+        ${this.supportedAttributes.verticalAngle
+          ? html`<div class="attr button-vertical-angle" @click=${this.toggleVerticalAngle}>
+              <p class="attr-title">V-Angle(&deg;)</p>
+              <p class="attr-value var-vertical-angle">${vertical_angle}</p>
+            </div>`
+          : ""}
         ${delay_off_countdown !== undefined
           ? html`<div class="attr button-timer" @click=${this.toggleTimer}>
               <p class="attr-title">Timer</p>
@@ -608,6 +656,19 @@ export class FanXiaomiCard extends LitElement {
                   Oscillate
                 </button>
               </div>`}
+        ${this.supportedAttributes.verticalOscillation
+          ? html`<div
+              class="op var-vertical-oscillating ${vertical_oscillating ? "active" : ""}"
+              @click=${this.toggleVerticalOscillation}
+            >
+              <button>
+                <span class="icon-waper">
+                  <ha-icon icon="mdi:swap-vertical"></ha-icon>
+                </span>
+                Vertical
+              </button>
+            </div>`
+          : ""}
         ${this.supportedAttributes.naturalSpeed
           ? html`<div
               class="op var-natural ${preset_mode === "nature" ? "active" : ""}"
@@ -763,6 +824,25 @@ export class FanXiaomiCard extends LitElement {
   private toggleOscillation() {
     const currentlyOscillating = this.getOscillation();
     this.setOscillation(!currentlyOscillating);
+  }
+
+  private toggleVerticalOscillation() {
+    const currentlyOscillating = this.getVerticalOscillation();
+    this.setVerticalOscillation(!currentlyOscillating);
+  }
+
+  private toggleVerticalAngle() {
+    const oldAngle = this.getVerticalAngle();
+    const angles = this.supportedAttributes.supportedVerticalAngles;
+    let newAngle;
+    const curAngleIndex = angles.indexOf(oldAngle);
+    if (curAngleIndex >= 0 && curAngleIndex < angles.length - 1) {
+      newAngle = angles[curAngleIndex + 1];
+    } else {
+      newAngle = angles[0];
+    }
+
+    this.setVerticalAngle(newAngle);
   }
 
   // https://lit.dev/docs/components/styles/
@@ -1000,6 +1080,7 @@ export class FanXiaomiCard extends LitElement {
         justify-content: center;
       }
       .button-angle,
+      .button-vertical-angle,
       .button-childlock,
       .button-timer {
         cursor: pointer;

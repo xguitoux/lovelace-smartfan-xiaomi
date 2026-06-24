@@ -39,7 +39,7 @@ Each getter/setter (`setAngle`/`getAngle`, `setTimer`, `setChildLock`, LED metho
 `supportedAttributes` (a `SupportedAttributes` struct on the element) drives which UI controls render and their ranges (speed levels, supported oscillation angles, sleep/LED/natural-mode availability). It is populated in `configureAsync()`:
 
 - For `default`: feature flags are derived from the entity's attributes (`checkFanFeatures`) and discovered companion entities (`checkFanAuxFeatures`), including building the angle list from the angle entity's min/max/step.
-- For `xiaomi_miio_fan`: capabilities are hardcoded per fan **model string** (e.g. `dmaker.fan.p5/p15/p18/p33`, `zhimi.fan.fa1`, `dmaker.fan.1c`, `leshow.fan.ss4`). **Adding support for a new model here means adding/adjusting one of these model-string blocks.** `force_sleep_mode_support` is an escape hatch that forces the sleep control on for any fan.
+- For `xiaomi_miio_fan`: capabilities are hardcoded per fan **model string** (e.g. `dmaker.fan.p5/p15/p18/p33`, `zhimi.fan.fa1`, `dmaker.fan.1c`, `leshow.fan.ss4`). **Adding support for a new model here means adding/adjusting one of these model-string blocks.** `force_sleep_mode_support` is an escape hatch that forces the sleep control on for any fan. Vertical oscillation (`verticalOscillation`) and vertical angle (`verticalAngle`) are instead feature-detected from the entity's `vertical_oscillate` / `vertical_angle` attributes (air-circulator models), and driven by the `fan_set_vertical_oscillation_on/off` and `fan_set_vertical_oscillation_angle` services.
 
 `configureAsync()` is async (registry WS calls); `shouldUpdate()` gates the first render on `isConfigureAsyncFinished` and also re-renders when any tracked companion entity's state changes.
 
