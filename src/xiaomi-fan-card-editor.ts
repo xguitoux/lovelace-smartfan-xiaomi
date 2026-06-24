@@ -19,6 +19,7 @@ const SCHEMA = [
   { name: "entity", selector: { entity: { domain: "fan" } } },
   { name: "force_sleep_mode_support", selector: { boolean: {} } },
   { name: "hide_led_button", selector: { boolean: {} } },
+  { name: "show_vertical_oscillate", selector: { boolean: {} } },
 ] as const;
 
 const LABELS: Record<string, string> = {
@@ -27,6 +28,7 @@ const LABELS: Record<string, string> = {
   entity: "Entity (Required)",
   force_sleep_mode_support: "Show sleep mode button",
   hide_led_button: "Hide LED button (for supported devices)",
+  show_vertical_oscillate: "Show vertical oscillate (for supported models)",
 };
 
 @customElement("smartfan-xiaomi-card-editor")

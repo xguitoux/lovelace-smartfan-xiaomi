@@ -605,7 +605,7 @@ export class FanXiaomiCard extends LitElement {
               <p class="attr-value var-angle">${angle}</p>
             </div>`
           : ""}
-        ${this.supportedAttributes.verticalAngle
+        ${this.config.show_vertical_oscillate && this.supportedAttributes.verticalAngle
           ? html`<div class="attr button-vertical-angle" @click=${this.toggleVerticalAngle}>
               <p class="attr-title">V-Angle(&deg;)</p>
               <p class="attr-value var-vertical-angle">${vertical_angle}</p>
@@ -656,7 +656,7 @@ export class FanXiaomiCard extends LitElement {
                   Oscillate
                 </button>
               </div>`}
-        ${this.supportedAttributes.verticalOscillation
+        ${this.config.show_vertical_oscillate && this.supportedAttributes.verticalOscillation
           ? html`<div
               class="op var-vertical-oscillating ${vertical_oscillating ? "active" : ""}"
               @click=${this.toggleVerticalOscillation}

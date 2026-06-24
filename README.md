@@ -65,6 +65,7 @@ platform: xiaomi_miio_airpurifier
 | `disable_animation`        | `False`   | (Optional) Disable fan image and animation                                               |
 | `force_sleep_mode_support` | `False`   | (Optional) Enables Sleep button in UI which sets speed to 1%                             |
 | `hide_led_button`          | `False`   | (Optional) Hide LED toggle for supported models                                          |
+| `show_vertical_oscillate`  | `False`   | (Optional) Show vertical oscillate button and vertical angle control (supported models)  |
 
 ## Preview
 
