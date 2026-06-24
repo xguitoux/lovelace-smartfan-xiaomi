@@ -43,8 +43,11 @@ export default async () => {
     {
       input: "src/xiaomi-fan-card.ts",
       output: {
-        dir: "dist",
+        // Emit a single self-contained file so HACS can serve it directly
+        // (the editor is dynamically imported; inline it instead of code-splitting).
+        file: "dist/xiaomi-fan-card.js",
         format: "es",
+        inlineDynamicImports: true,
       },
       plugins: [...plugins],
     },

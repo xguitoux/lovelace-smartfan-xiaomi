@@ -1,3 +1,5 @@
 /node_modules/
 /.rpt2_cache/
-/dist
+/dist/*
+# Keep the built bundle committed so HACS can serve it from the repo.
+!/dist/xiaomi-fan-card.js
