@@ -52,14 +52,14 @@ Example of Lovelace config `views.cards` key
 ```yaml
 entity: fan.entity_id
 name: Fan Name
-type: "custom:fan-xiaomi"
+type: "custom:smartfan-xiaomi"
 platform: xiaomi_miio_airpurifier
 ```
 
 | Card attribute             | Default   | Description                                                                              |
 | -------------------------- | --------- | ---------------------------------------------------------------------------------------- |
 | `entity_id`                | -         | `entity_id` of your fan                                                                  |
-| `type`                     | -         | Must be `custom:fan-xiaomi`                                                              |
+| `type`                     | -         | Must be `custom:smartfan-xiaomi`                                                         |
 | `name`                     | -         | (Optional) Fan name shown on card title                                                  |
 | `platform`                 | `default` | (Optional) If using Xiaomi Mi Smart Pedestal Fan integration, specify `xiaomi_miio_fan`. |
 | `disable_animation`        | `False`   | (Optional) Disable fan image and animation                                               |

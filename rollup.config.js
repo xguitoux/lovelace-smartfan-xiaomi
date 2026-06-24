@@ -6,10 +6,6 @@ import babel from "rollup-plugin-babel";
 import { terser } from "rollup-plugin-terser";
 import serve from "rollup-plugin-serve";
 import json from "@rollup/plugin-json";
-import ignore from "./rollup-plugins/ignore";
-import { ignoreTextfieldFiles } from "./elements/ignore/textfield";
-import { ignoreSelectFiles } from "./elements/ignore/select";
-import { ignoreSwitchFiles } from "./elements/ignore/switch";
 
 export default async () => {
   const dev = process.env.ROLLUP_WATCH;
@@ -41,9 +37,6 @@ export default async () => {
     }),
     dev && serve(serveopts),
     !dev && terser(),
-    ignore({
-      files: [...ignoreTextfieldFiles, ...ignoreSelectFiles, ...ignoreSwitchFiles].map((file) => require.resolve(file)),
-    }),
   ];
 
   return [

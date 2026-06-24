@@ -7,15 +7,6 @@
   "license": "Apache-2.0",
   "private": true,
   "dependencies": {
-    "@lit-labs/scoped-registry-mixin": "^1.0.0",
-    "@material/mwc-formfield": "^0.25.3",
-    "@material/mwc-list": "^0.25.3",
-    "@material/mwc-menu": "^0.25.3",
-    "@material/mwc-notched-outline": "^0.25.3",
-    "@material/mwc-ripple": "^0.25.3",
-    "@material/mwc-select": "^0.25.3",
-    "@material/mwc-switch": "^0.25.3",
-    "@material/mwc-textfield": "^0.25.3",
     "custom-card-helpers": "^1.9.0",
     "home-assistant-js-websocket": "^7.0.2",
     "lit": "^2.2.1"
@@ -42,12 +33,6 @@
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.31.2",
     "typescript": "^4.6.3"
-  },
-  "resolutions": {
-    "lit": "^2.1.2",
-    "lit-html": "2.1.2",
-    "lit-element": "3.1.2",
-    "@lit/reactive-element": "1.2.1"
   },
   "scripts": {
     "start": "rollup -c --watch",

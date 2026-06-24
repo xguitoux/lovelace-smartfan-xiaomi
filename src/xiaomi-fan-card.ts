@@ -8,7 +8,7 @@ import { FanXiaomiCardConfig, defaultConfig } from "./config";
 // Add the card to the UI card picker dialog
 (window as any).customCards = (window as any).customCards || [];
 (window as any).customCards.push({
-  type: "fan-xiaomi",
+  type: "smartfan-xiaomi",
   name: "Xiaomi Fan Lovelace Card",
   preview: true,
   description: "Xiaomi Smartmi Fan Lovelace card for HASS/Home Assistant.",
@@ -109,11 +109,11 @@ function delayOffCountdownText(delay_off_countdown: number, model: string): stri
   return timer_display;
 }
 
-@customElement("fan-xiaomi")
+@customElement("smartfan-xiaomi")
 export class FanXiaomiCard extends LitElement {
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
     await import("./xiaomi-fan-card-editor");
-    return document.createElement("fan-xiaomi-card-editor");
+    return document.createElement("smartfan-xiaomi-card-editor");
   }
 
   public static getStubConfig(): Record<string, unknown> {
