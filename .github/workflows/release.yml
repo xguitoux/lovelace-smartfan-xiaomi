@@ -6,25 +6,26 @@ on:
 
 jobs:
   release:
-    name: Prepare release
+    name: Build and attach bundle to release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
 
-      # Build
-      - name: Build the file
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Build the bundle
         run: |
-          cd /home/runner/work/lovelace-smartfan-xiaomi/lovelace-smartfan-xiaomi
           npm install
           npm run build
 
-      # Upload build file to the release as an asset.
-      - name: Upload zip to release
-        uses: svenstaro/upload-release-action@v1-release
-
+      # Attach the built file to the published release so HACS can download it directly.
+      - name: Upload bundle to release
+        uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: /home/runner/work/lovelace-fan-xiaomi/lovelace-fan-xiaomi/dist/*
+          file: dist/xiaomi-fan-card.js
+          asset_name: xiaomi-fan-card.js
           tag: ${{ github.ref }}
           overwrite: true
-          file_glob: true
