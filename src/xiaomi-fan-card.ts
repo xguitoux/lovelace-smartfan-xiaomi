@@ -551,10 +551,16 @@ export class FanXiaomiCard extends LitElement {
 
     const speedLevel = this.getSpeedLevel();
 
+    const verticalOscillationActive =
+      this.config.show_vertical_oscillate &&
+      this.supportedAttributes.verticalOscillation &&
+      vertical_oscillating &&
+      state.state === "on";
+
     return html` <div class="fan-xiaomi-panel" @click=${(ev) => ev.stopPropagation()}>
       ${this.config.disable_animation
         ? ""
-        : html`<div class="fanbox-container">
+        : html`<div class="fanbox-container ${verticalOscillationActive ? "vertical-oscillation" : ""}">
             <div class="var-sensors">
               ${temperature !== undefined ? html`${temperature}°C<br />` : ""}
               ${humidity !== undefined ? html`${humidity}%<br />` : ""}
@@ -958,6 +964,9 @@ export class FanXiaomiCard extends LitElement {
       .fanbox.active.oscillation {
         animation: oscillate 8s infinite linear;
       }
+      .fanbox-container.vertical-oscillation {
+        animation: vertical-oscillate 8s infinite linear;
+      }
       .blades div {
         position: absolute;
         margin: 15% 0 0 15%;
@@ -1109,6 +1118,23 @@ export class FanXiaomiCard extends LitElement {
         }
         to {
           transform: perspective(10em) rotateY(0);
+        }
+      }
+      @keyframes vertical-oscillate {
+        0% {
+          transform: perspective(10em) rotateX(0);
+        }
+        25% {
+          transform: perspective(10em) rotateX(25deg);
+        }
+        50% {
+          transform: perspective(10em) rotateX(0);
+        }
+        75% {
+          transform: perspective(10em) rotateX(-25deg);
+        }
+        to {
+          transform: perspective(10em) rotateX(0);
         }
       }
     `);
