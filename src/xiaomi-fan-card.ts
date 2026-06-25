@@ -397,18 +397,15 @@ export class FanXiaomiCard extends LitElement {
   }
 
   private checkFanFeatures(attributes) {
-    if (
-      attributes.preset_mode &&
-      attributes.preset_modes &&
-      attributes.preset_modes.some((m) => m.toLowerCase() === "nature")
-    ) {
-      this.supportedAttributes.naturalSpeed = true;
-    }
+    this.supportedAttributes.naturalSpeed =
+      attributes.preset_modes?.some((m) => m.toLowerCase() === "nature") ?? false;
   }
 
   private checkFanAuxFeatures() {
+    // On the native platform the oscillation angle is only available when the
+    // companion `number._oscillation_angle` entity is discovered.
+    this.supportedAttributes.angle = !!this.deviceEntities.angle;
     if (this.deviceEntities.angle) {
-      this.supportedAttributes.angle = true;
       const attr = this.hass.states[this.deviceEntities.angle].attributes;
       if (attr.min && attr.max && attr.step) {
         const angles: number[] = [];
@@ -525,7 +522,7 @@ export class FanXiaomiCard extends LitElement {
         ${state === undefined || state.state === "unavailable"
           ? html`<hui-warning
               >Fan entity ${this.config.entity}
-              ${state.state === "unavailable" ? "is unavailable" : "was not found"}.</hui-warning
+              ${state === undefined ? "was not found" : "is unavailable"}.</hui-warning
             >`
           : this.renderContent()}
       </ha-card>
@@ -810,9 +807,10 @@ export class FanXiaomiCard extends LitElement {
 
   private toggleSleepMode() {
     if (this.getSpeedPercentage() === 1) {
-      this.hass.callService("fan", "set_speed", {
+      // Currently in sleep mode (1%): restore the lowest normal speed level.
+      this.hass.callService("fan", "set_percentage", {
         entity_id: this.config.entity,
-        speed: "low",
+        percentage: (1 / this.supportedAttributes.speedLevels) * 100,
       });
     } else {
       this.hass.callService("fan", "set_percentage", {
